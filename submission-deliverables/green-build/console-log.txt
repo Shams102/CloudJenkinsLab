@@ -1,0 +1,175 @@
+Started by an SCM change
+Obtained Jenkinsfile from git git://127.0.0.1:9418/festpass-java
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on student-laptop in C:\CloudJenkinsLab\jenkins-lab\runtime\agent-work\workspace\festpass-ci
+[Pipeline] {
+[Pipeline] timeout
+Timeout set to expire in 5 min 0 sec
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Checkout)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+Fetching changes from the remote Git repository
+Checking out Revision 0be93a120c455fab930bcc06a593366ba7ba6b20 (refs/remotes/origin/main)
+ > git.exe rev-parse --resolve-git-dir C:\CloudJenkinsLab\jenkins-lab\runtime\agent-work\workspace\festpass-ci\.git # timeout=10
+ > git.exe config remote.origin.url git://127.0.0.1:9418/festpass-java # timeout=10
+Fetching upstream changes from git://127.0.0.1:9418/festpass-java
+ > git.exe --version # timeout=10
+ > git --version # 'git version 2.51.0.windows.1'
+ > git.exe fetch --tags --force --progress -- git://127.0.0.1:9418/festpass-java +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git.exe rev-parse "refs/remotes/origin/main^{commit}" # timeout=10
+ > git.exe config core.sparsecheckout # timeout=10
+ > git.exe checkout -f 0be93a120c455fab930bcc06a593366ba7ba6b20 # timeout=10
+Commit message: "Fix booking cancellation"
+ > git.exe rev-list --no-walk b11f54e7d949c695935d1649182169570ac28532 # timeout=10
+[Pipeline] dir
+Running in C:\CloudJenkinsLab\jenkins-lab\runtime\agent-work\workspace\festpass-ci\build
+[Pipeline] {
+[Pipeline] deleteDir
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] script
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] bat
+
+C:\CloudJenkinsLab\jenkins-lab\runtime\agent-work\workspace\festpass-ci>git log -1 --oneline   && java -version   && javac -version 
+0be93a1 Fix booking cancellation
+openjdk version "21.0.9" 2025-10-21 LTS
+OpenJDK Runtime Environment Temurin-21.0.9+10 (build 21.0.9+10-LTS)
+OpenJDK 64-Bit Server VM Temurin-21.0.9+10 (build 21.0.9+10-LTS, mixed mode, sharing)
+javac 21.0.9
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Submission setup)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] bat
+
+C:\CloudJenkinsLab\jenkins-lab\runtime\agent-work\workspace\festpass-ci>java ci/BuildEvidence.java prepare 
+Submission settings ready. Evidence will use a class-scoped hash of the computer name and a local random installation ID.
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Test)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] bat
+
+C:\CloudJenkinsLab\jenkins-lab\runtime\agent-work\workspace\festpass-ci>java ci/Build.java test 
+Compiled FestPass with Java 21.
+PASS emptyEventAcceptsBooking
+PASS lastAvailableSeatIsAccepted
+PASS fullEventRejectsBooking
+PASS overCapacityRejectsBooking
+PASS zeroCapacityRejectsBooking
+PASS oneSeatEventAcceptsBooking
+PASS negativeBookedIsRejected
+PASS negativeCapacityIsRejected
+PASS eventsTrackIndependentCapacity
+PASS duplicateEventDoesNotReplaceBookings
+PASS invalidEventsLeaveStateUnchanged
+PASS duplicateBookingDoesNotConsumeSeat
+PASS soldOutBookingLeavesRosterUnchanged
+PASS cancellationFreesSeat
+PASS missingBookingCannotBeCancelled
+PASS unknownEventsAreRejected
+PASS invalidStudentIdsAreRejected
+PASS snapshotsCannotMutateService
+PASS bookingsSurviveSaveAndReload
+PASS cancellationsSurviveReload
+PASS corruptDataIsRejected
+PASS missingDataStartsEmpty
+PASS cliWorkflowPersistsAcrossCommands
+PASS cliReportsInvalidRequests
+PASS cliDoesNotOverwriteCorruptFile
+PASS cliReportsReadAndSaveFailures
+PASS cliRejectsLockedStore
+PASS helpDoesNotNeedProjectData
+28 tests, 0 failures. Report: build\test-results\TEST-FestPass.xml
+[Pipeline] }
+[Pipeline] // script
+Post stage
+[Pipeline] junit
+Recording test results
+[Checks API] No suitable checks publisher found.
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build JAR)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] bat
+
+C:\CloudJenkinsLab\jenkins-lab\runtime\agent-work\workspace\festpass-ci>java ci/Build.java package 
+Compiled FestPass with Java 21.
+BUILD SUCCESS: build/festpass.jar
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Smoke test JAR)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] bat
+
+C:\CloudJenkinsLab\jenkins-lab\runtime\agent-work\workspace\festpass-ci>java ci/SmokeTest.java 
+PASS JAR: add-event (exit 0)
+PASS JAR: book (exit 0)
+PASS JAR: book (exit 2)
+PASS JAR: roster (exit 0)
+PASS JAR: cancel (exit 0)
+PASS JAR: book (exit 0)
+PASS JAR: summary (exit 0)
+PASS: seven real-JAR commands; persistence, sold-out rejection, cancellation, and seat reuse verified.
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Save artifact)
+[Pipeline] archiveArtifacts
+Archiving artifacts
+Recording fingerprints
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] bat
+
+C:\CloudJenkinsLab\jenkins-lab\runtime\agent-work\workspace\festpass-ci>java ci/BuildEvidence.java "SUCCESS" 
+Recorded submission-evidence.csv for Shams, build 3, result SUCCESS.
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] archiveArtifacts
+Archiving artifacts
+Recording fingerprints
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // timeout
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
